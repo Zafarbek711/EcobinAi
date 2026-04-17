@@ -41,6 +41,7 @@ interface UserRepository : JpaRepository<User, Long>{
     WHERE t.id = :binId
 """)
     fun findDriversByTrashBinId(binId: Long): List<User>
+    fun findByRoleAndLocationName(role: Role, locationName: String): List<User>
 }
 
 

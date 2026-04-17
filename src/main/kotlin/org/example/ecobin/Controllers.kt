@@ -1,4 +1,5 @@
 package org.example.ecobin
+
 import jakarta.validation.Valid
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.data.domain.Pageable

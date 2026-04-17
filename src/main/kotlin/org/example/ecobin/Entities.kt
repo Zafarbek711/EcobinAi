@@ -64,6 +64,10 @@ class TrashBin(
     @Column(nullable = false, unique = true)
     var cameraId: String? = null,
 
+
+    @Column(name = "location_name")
+    var locationName: String? = null,
+
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     var status: BinStatus = BinStatus.EMPTY,
@@ -135,8 +139,10 @@ class User(
     var email: String? = null,
 
     @Column(name = "telegram_chat_id")
-    var telegramChatId: String? = null
+    var telegramChatId: String? = null,
 
+    @Column(name = "location_name")
+    var locationName: String? = null
 ) : BaseEntity()
 
 

@@ -214,6 +214,7 @@ class UserServiceImpl(
         request.password?.let { user.password = it }
         request.role?.let { user.role = it }
         request.email?.let { user.email = it }
+        request.locationName?.let { user.locationName = it }
 
         request.password?.let {
             user.password = passwordEncoder.encode(it)
@@ -282,6 +283,7 @@ class TrashBinServiceImpl(
             latitude = request.latitude,
             longitude = request.longitude,
             fillLevel = request.fillLevel,
+            locationName = request.locationName,
             drivers = drivers.toMutableList()
         )
 
@@ -298,6 +300,7 @@ class TrashBinServiceImpl(
         request.name?.let { bin.name = it }
         request.latitude?.let { bin.latitude = it }
         request.longitude?.let { bin.longitude = it }
+        request.locationName?.let { bin.locationName = it }
 
         // 🔥 DRIVERLARNI UPDATE QILISH
         request.driverIds?.let {
@@ -477,16 +480,27 @@ class EscalationService(
 
             // 🔥 30 MINUT — ADMIN
             if (minutesPassed >= 30 && !bin.escalatedToAdmin) {
+                val locationName = bin.locationName ?: return@forEach
+                val admins = userRepository.findByRoleAndLocationName(Role.ADMIN, locationName)
 
-                val admin = userRepository.findAll()
-                    .firstOrNull { it.role == Role.ADMIN }
-
-                admin?.telegramChatId?.let { chatId ->
-                    telegramService.sendMessage(
-                        chatId,
-                        "⚠️ Driver javob bermadi! ${bin.name} hali ham FULL."
-                    )
+                admins.forEach { admin ->
+                    admin.telegramChatId?.let { chatId ->
+                        telegramService.sendMessage(
+                            chatId,
+                            "⚠️ Driver javob bermadi! ${bin.name} hali ham FULL.\nHudud: $locationName"
+                        )
+                    }
                 }
+
+//                val admin = userRepository.findAll()
+//                    .firstOrNull { it.role == Role.ADMIN }
+//
+//                admin?.telegramChatId?.let { chatId ->
+//                    telegramService.sendMessage(
+//                        chatId,
+//                        "⚠️ Driver javob bermadi! ${bin.name} hali ham FULL."
+//                    )
+//                }
 
                 bin.escalatedToAdmin = true
                 trashBinRepository.save(bin)
@@ -496,16 +510,26 @@ class EscalationService(
 
             // 🔥 60 MINUT — SUPER ADMIN
             if (minutesPassed >= 60 && !bin.escalatedToSuperAdmin) {
+                val superAdmins = userRepository.findByRole(Role.SUPER_ADMIN)
 
-                val superAdmin = userRepository.findAll()
-                    .firstOrNull { it.role == Role.SUPER_ADMIN }
-
-                superAdmin?.telegramChatId?.let { chatId ->
-                    telegramService.sendMessage(
-                        chatId,
-                        "🚨 ADMIN ham javob bermadi! ${bin.name} 1 soatdan beri FULL."
-                    )
+                superAdmins.forEach { superAdmin ->
+                    superAdmin.telegramChatId?.let { chatId ->
+                        telegramService.sendMessage(
+                            chatId,
+                            "🚨 ADMIN ham javob bermadi! ${bin.name} 1 soatdan beri FULL.\nHudud: ${bin.locationName}"
+                        )
+                    }
                 }
+
+//                val superAdmin = userRepository.findAll()
+//                    .firstOrNull { it.role == Role.SUPER_ADMIN }
+//
+//                superAdmin?.telegramChatId?.let { chatId ->
+//                    telegramService.sendMessage(
+//                        chatId,
+//                        "🚨 ADMIN ham javob bermadi! ${bin.name} 1 soatdan beri FULL."
+//                    )
+//                }
 
                 bin.escalatedToSuperAdmin = true
                 trashBinRepository.save(bin)

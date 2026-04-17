@@ -19,7 +19,8 @@ data class TrashBinCreateDto(
     val longitude: Double,
     val fillLevel: Int,
     val cameraId: String,
-    val driverIds: List<Long> // 🔥 QO‘SHILDI
+    val driverIds: List<Long>,
+    val locationName: String,
 )
 
 
@@ -27,6 +28,7 @@ data class TrashBinUpdateDto(
     var name: String?,
     var latitude: Double?,
     var longitude: Double?,
+    var locationName: String?,
     @field:Min(0) @field:Max(100) val fillLevel: Int?,
     val driverIds: List<Long>? = null
 )
@@ -50,6 +52,7 @@ data class TrashBinResponseDto(
     val longitude: Double,
     val fillLevel: Int,
     val status: BinStatus,
+    val locationName: String?,
     val imageUrl: String?,
     val imageBase64: String?,
     val drivers: List<DriverShortDto>
@@ -62,6 +65,7 @@ data class TrashBinResponseDto(
             longitude = entity.longitude,
             fillLevel = entity.fillLevel,
             status = entity.status,
+            locationName = entity.locationName,
             imageUrl = entity.imageUrl,
             imageBase64 = entity.imageBase64,
             drivers = entity.drivers.map { DriverShortDto.from(it) }
@@ -79,9 +83,10 @@ data class UserCreateDto(
     val password: String,
     val role: Role,
     val email: String,
+    val locationName: String?
 ) {
     fun toUserEntity(): User {
-        return User(fullname, username, password, role, email)
+        return User(fullname, username, password, role, email,  null, locationName)
     }
 }
 
@@ -111,6 +116,7 @@ data class UserUpdateDto(
     val password: String?,
     val role: Role?,
     val email: String?,
+    val locationName: String?
 )
 
 data class UserResponseDto(
@@ -119,6 +125,7 @@ data class UserResponseDto(
     val username: String,
     val role: Role,
     val email: String?,
+    val locationName: String?
 ) {
     companion object {
         fun from(entity: User) = UserResponseDto(
@@ -127,6 +134,7 @@ data class UserResponseDto(
             username = entity.username,
             role = entity.role,
             email = entity.email,
+            locationName = entity.locationName
         )
     }
 }

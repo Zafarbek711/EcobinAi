@@ -26,8 +26,10 @@ spring:
             enable: true
 
 telegram:
-  bot-token: 8723210024:AAHqM4bzpjiIeX6txan8HPu_NvHL5lfalZ0 # vaqtincha token yozing
-  #8786881272:AAHbtWn7HIFGbKnPBGY26qyYf0dqUdYEkK8
+  bot-token: 8723210024:AAHqM4bzpjiIeX6txan8HPu_NvHL5lfalZ0 # obodshahar_bot
+  #8786881272:AAHbtWn7HIFGbKnPBGY26qyYf0dqUdYEkK8 #Ecobin_Test_bot
+
+
 
 
 server:
